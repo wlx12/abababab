@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title></title>
+</head>
+<body style="text-align:center;">
+	<canvas id='can' width='640' height='640'>你电脑太拉垮了</canvas>
+	<audio id='sound' src='mp3/下棋.mp3'></audio>
+	<audio id='sound1' src='mp3/胜利.mp3'></audio>
+	<script type="text/javascript">
+		var can=document.getElementById('can')
+		var ctx=can.getContext('2d')
+		var background=new Image();
+		background.src='images/野兽先辈.jpg';
+		var chessboard=new Image();
+		chessboard.src='images/棋盘.PNG';
+		var black=new Image();
+		black.src='images/black.png';
+		var white=new Image();
+		white.src='images/white.png';
+		var state=0;
+		window.onload=function(){ctx.drawImage(background,0,0)}
+		var flag = false;
+		can.onclick=function(e){
+			var x = Math.floor(e.offsetX/40);
+			var y = Math.floor(e.offsetY/40);
+			if(state==1){
+				oneStep(x,y);
+			}else if(state==2){
+				window.location.reload();
+			}else if(x>4&&x<11&&y>10&&y<13){
+
+				ctx.drawImage(chessboard,0,0);
+				state=1;
+			}
+		}
+		var chess = new Array(16);
+		for (var i=0;i<chess.length;i++){
+			chess[i] = new Array();
+			for(var j=0;j<chess.length;j++){
+				chess[i][j] = 0;
+			}
+		}
+		function oneStep(x,y){
+			if (chess[x][y]==0){
+				if(flag=!flag){
+					ctx.drawImage(black,x*40+1,y*40+1);
+					chess[x][y]=1;
+				}else{
+					ctx.drawImage(white,x*40+1,y*40+1);
+					chess[x][y]=2;
+				}
+
+			document.getElementById('sound').play();
+			isWin(x,y);
+			}
+		}
+		function  isWin(x,y){
+			var num=0
+			for (var i = 0; i <16; i++) {
+			
+				if (chess[i][y]==chess[x][y]){
+					num+=1;
+				}else{
+					num=0;
+				}
+				if(num==5){
+					win()
+				}
+			}
+		
+			num=0
+			for(var i=0;i<16;i++){
+				if(chess[x][i]==chess[x][y]){
+						num+=1;
+					}else{
+						num=0;
+					}
+					if(num==5){
+						win()
+					}
+				}
+			
+			
+			num=0;
+			for(var i=0,n=y-x;i<16;i++,n++){
+				if(chess[i][n]==chess[x][y]){
+					num+=1;
+				}else{
+					num=0;
+				}if(num==5){
+					win()
+				}
+			}
+			num=0;
+			for(var i=0,n=y+x;i<16;i++,n--){
+				if(chess[i][n]==chess[x][y]){
+					num+=1;
+				}else{
+					num=0;
+				}if(num==5){
+					win()
+				}
+			}
+		}
+		function win(){
+			document.getElementById('sound1').play();
+			ctx.font='150px 隶书';
+			ctx.fillStyle='red';
+			ctx.fillText(flag?'114514':'好臭啊',100,300);
+			state=2;
+		}
+	</script>
+</body>
+</html>
